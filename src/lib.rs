@@ -84,7 +84,7 @@ impl Fhir {
         // }
 
         let binary_path =
-            "/Users/jesse/Code/tree_sitter/fhir-lsp/target/release/fhir-lsp".to_owned();
+            "/Users/jesse/Code/rust_proj//fhir-lsp/target/release/fhir-lsp".to_owned();
 
         self.cached_binary_path = Some(binary_path.clone());
         Ok(binary_path)
