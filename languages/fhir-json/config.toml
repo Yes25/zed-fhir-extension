@@ -1,0 +1,4 @@
+name = "fhir-json"
+grammar = "json"
+path_suffixes = ["json"]
+first_line_pattern = ''
