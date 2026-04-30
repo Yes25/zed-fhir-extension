@@ -1,9 +1,9 @@
-id = "fhir"
-name = "Fhir"
+id = "fhir_json"
+name = "Fhir json"
 version = "0.0.1"
 schema_version = 1
 authors = ["Jesse Kruse <jesse.kruse@outlook.com>"]
-description = "Support for FHIR messages"
+description = "Support for FHIR messages in json format"
 repository = "https://github.com/Yes25/zed-fhir-extension"
 
 [grammars.json]
