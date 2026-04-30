@@ -1,5 +1,5 @@
 id = "fhir_json"
-name = "Fhir json"
+name = "Fhir Json"
 version = "0.0.1"
 schema_version = 1
 authors = ["Jesse Kruse <jesse.kruse@outlook.com>"]
