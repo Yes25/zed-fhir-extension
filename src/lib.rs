@@ -1,5 +1,6 @@
 use zed_extension_api::{
-    self as zed, LanguageServerId, Result, serde_json, settings::LspSettings,
+    self as zed, Architecture, DownloadedFileType, LanguageServerId,
+    LanguageServerInstallationStatus, Os, Result, serde_json, settings::LspSettings,
 };
 
 struct Fhir {
@@ -45,61 +46,61 @@ impl zed::Extension for Fhir {
 }
 
 impl Fhir {
-    fn language_server_binary(&mut self, _language_server_id: &LanguageServerId) -> Result<String> {
+    fn language_server_binary(&mut self, language_server_id: &LanguageServerId) -> Result<String> {
         if let Some(path) = &self.cached_binary_path {
             if std::fs::metadata(path).is_ok_and(|m| m.is_file()) {
                 return Ok(path.clone());
             }
         }
 
-        // let (os, arch) = zed::current_platform();
+        let (os, arch) = zed::current_platform();
 
-        // let binary_name = match (&os, &arch) {
-        //     (Os::Mac, Architecture::Aarch64) => "hl7_v2_lsp-aarch64-apple-darwin.tar.gz",
-        //     (Os::Mac, _) => "hl7_v2_lsp-x86_64-apple-darwin.tar.gz",
-        //     (Os::Linux, Architecture::Aarch64) => "hl7_v2_lsp-aarch64-unknown-linux-gnu.tar.gz",
-        //     (Os::Linux, _) => "hl7_v2_lsp-x86_64-unknown-linux-gnu.tar.gz",
-        //     (Os::Windows, _) => "hl7_v2_lsp-x86_64-pc-windows-msvc.zip",
-        // };
+        let asset_name = match (&os, &arch) {
+            (Os::Mac, Architecture::Aarch64) => "fhir-lsp-aarch64-apple-darwin.tar.gz",
+            (Os::Mac, _) => "fhir-lsp-x86_64-apple-darwin.tar.gz",
+            (Os::Linux, Architecture::Aarch64) => "fhir-lsp-aarch64-unknown-linux-gnu.tar.gz",
+            (Os::Linux, _) => "fhir-lsp-x86_64-unknown-linux-gnu.tar.gz",
+            (Os::Windows, _) => "fhir-lsp-x86_64-pc-windows-msvc.zip",
+        };
 
-        // // If there is a new LSP release, bumb the version here -> new download of current LSP should be triggered
-        // // for users then.
-        // let version = "0.1.0";
-        // let url = format!(
-        //     "https://github.com/Yes25/hl7_v2_lsp/releases/download/v{version}/{binary_name}"
-        // );
-        // let file_type = match os {
-        //     Os::Windows => DownloadedFileType::Zip,
-        //     _ => DownloadedFileType::GzipTar,
-        // };
+        // Bump this version when a new release is published to trigger a re-download for users.
+        let version = "0.1.0";
+        let url = format!(
+            "https://github.com/Yes25/fhir-lsp/releases/download/v{version}/{asset_name}"
+        );
+        let file_type = match os {
+            Os::Windows => DownloadedFileType::Zip,
+            _ => DownloadedFileType::GzipTar,
+        };
 
-        // let download_dir = format!("bin/hl7_v2_lsp-{version}");
-        // let binary_path = format!("{download_dir}/hl7_v2_lsp");
+        let download_dir = format!("bin/fhir-lsp-{version}");
+        let binary_name = match os {
+            Os::Windows => "fhir-lsp.exe",
+            _ => "fhir-lsp",
+        };
+        let binary_path = format!("{download_dir}/{binary_name}");
 
-        // if !std::fs::metadata(&binary_path).is_ok_and(|m| m.is_file()) {
-        //     zed::set_language_server_installation_status(
-        //         language_server_id,
-        //         &LanguageServerInstallationStatus::Downloading,
-        //     );
+        if !std::fs::metadata(&binary_path).is_ok_and(|m| m.is_file()) {
+            zed::set_language_server_installation_status(
+                language_server_id,
+                &LanguageServerInstallationStatus::Downloading,
+            );
 
-        //     zed::download_file(&url, &download_dir, file_type).map_err(|e| {
-        //         zed::set_language_server_installation_status(
-        //             language_server_id,
-        //             &LanguageServerInstallationStatus::Failed(e.clone()),
-        //         );
-        //         format!("failed to download hl7_v2_lsp: {e}")
-        //     })?;
+            zed::download_file(&url, &download_dir, file_type).map_err(|e| {
+                zed::set_language_server_installation_status(
+                    language_server_id,
+                    &LanguageServerInstallationStatus::Failed(e.clone()),
+                );
+                format!("failed to download fhir-lsp: {e}")
+            })?;
 
-        //     zed::make_file_executable(&binary_path)?;
+            zed::make_file_executable(&binary_path)?;
 
-        //     zed::set_language_server_installation_status(
-        //         language_server_id,
-        //         &LanguageServerInstallationStatus::None,
-        //     );
-        // }
-
-        let binary_path =
-            "/Users/jesse/Code/rust_proj//fhir-lsp/target/release/fhir-lsp".to_owned();
+            zed::set_language_server_installation_status(
+                language_server_id,
+                &LanguageServerInstallationStatus::None,
+            );
+        }
 
         self.cached_binary_path = Some(binary_path.clone());
         Ok(binary_path)
