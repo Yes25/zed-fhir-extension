@@ -5,6 +5,6 @@ highlighting is done via a [tree-sitter grammar](https://github.com/Yes25/tree-s
 Additionally a [fhir-lsp](https://github.com/Yes25/fhir-lsp)
 is used to provide some convenience features like
 - `go to defintion` and `go to reference` wihtin a Bundle or throghout a project.
-- Provide Documation trough hover over fields
-- Some diagnostics like missing mandatory fields
-- Auto formating that sorts fields in the order as they appear in the [fhir documentation](https://www.hl7.org/fhir/overview.html)
+- Provide `documentation` on `hover` over fields
+- Some `diagnostics` like missing mandatory fields
+- `Auto formating` that sorts fields in the order they appear in the [fhir documentation](https://www.hl7.org/fhir/overview.html)
