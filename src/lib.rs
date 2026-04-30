@@ -1,8 +1,5 @@
-use std::collections::binary_heap;
-
 use zed_extension_api::{
-    self as zed, Architecture, DownloadedFileType, LanguageServerId,
-    LanguageServerInstallationStatus, Os, Result,
+    self as zed, LanguageServerId, Result, serde_json, settings::LspSettings,
 };
 
 struct Fhir {
@@ -14,6 +11,24 @@ impl zed::Extension for Fhir {
         Self {
             cached_binary_path: None,
         }
+    }
+
+    fn language_server_initialization_options(
+        &mut self,
+        _language_server_id: &LanguageServerId,
+        worktree: &zed::Worktree,
+    ) -> Result<Option<serde_json::Value>> {
+        let settings = LspSettings::for_worktree("fhir-lsp", worktree)?;
+        Ok(settings.initialization_options)
+    }
+
+    fn language_server_workspace_configuration(
+        &mut self,
+        _language_server_id: &LanguageServerId,
+        worktree: &zed::Worktree,
+    ) -> Result<Option<serde_json::Value>> {
+        let settings = LspSettings::for_worktree("fhir-lsp", worktree)?;
+        Ok(settings.settings)
     }
 
     fn language_server_command(
@@ -30,7 +45,7 @@ impl zed::Extension for Fhir {
 }
 
 impl Fhir {
-    fn language_server_binary(&mut self, language_server_id: &LanguageServerId) -> Result<String> {
+    fn language_server_binary(&mut self, _language_server_id: &LanguageServerId) -> Result<String> {
         if let Some(path) = &self.cached_binary_path {
             if std::fs::metadata(path).is_ok_and(|m| m.is_file()) {
                 return Ok(path.clone());
