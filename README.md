@@ -1,7 +1,7 @@
 # FHIR Extension for Zed
 
 Adds support for FHIR json messages in the [Zed editor](https://zed.dev).
-It provides syntaxhighlighting and additional convenience features throgh the [fhir-lsp](https://github.com/Yes25/fhir-lsp):
+It provides syntaxhighlighting and additional convenience features through the [fhir-lsp](https://github.com/Yes25/fhir-lsp):
 - `go to defintion` and `go to reference` wihtin a Bundle or throghout a project.
 - Provide `documentation` on `hover` over fields
 - Some `diagnostics` like missing mandatory fields
